@@ -3,6 +3,7 @@ use std::io::{BufRead, BufReader};
 
 fn main() {
     part1();
+    part2();
 }
 
 fn part1() {
@@ -29,4 +30,27 @@ fn part1() {
     }
 
     println!("{product}");
+}
+
+fn part2() {
+    let file = BufReader::new(File::open("input.txt").unwrap());
+    let lines = file.lines().map(|l| l.unwrap()).collect::<Vec<_>>();
+
+    let time: f64 = lines[0]
+        .split_whitespace()
+        .skip(1)
+        .collect::<String>()
+        .parse()
+        .unwrap();
+    let distance: f64 = lines[1]
+        .split_whitespace()
+        .skip(1)
+        .collect::<String>()
+        .parse()
+        .unwrap();
+
+    let root = (time.powi(2) - 4.0 * (distance + 0.1)).sqrt();
+    let total = ((-time - root) / -2.0).floor() - ((-time + root) / -2.0).ceil() + 1.0;
+
+    println!("{total}");
 }
