@@ -3,6 +3,7 @@ use std::io::{BufRead, BufReader};
 
 fn main() {
     part1();
+    part2();
 }
 
 fn part1() {
@@ -87,6 +88,43 @@ fn part1() {
                 .as_deref()
             {
                 count += 1;
+            }
+        }
+    }
+
+    println!("{count}");
+}
+
+fn part2() {
+    let file = BufReader::new(File::open("input.txt").unwrap());
+
+    let lines = file.lines().map(|l| l.unwrap()).collect::<Vec<_>>();
+
+    let mut count = 0;
+    for (y, line) in lines.iter().enumerate() {
+        for x in 0..line.len() {
+            let result = (
+                y.checked_sub(1).and_then(|y| {
+                    lines
+                        .get(y)
+                        .and_then(|l| x.checked_sub(1).and_then(|x| l.get(x..x + 1)))
+                }),
+                y.checked_sub(1)
+                    .and_then(|y| lines.get(y).and_then(|l| l.get(x + 1..x + 2))),
+                lines.get(y).and_then(|l| l.get(x..x + 1)),
+                lines
+                    .get(y + 1)
+                    .and_then(|l| x.checked_sub(1).and_then(|x| l.get(x..x + 1))),
+                lines.get(y + 1).and_then(|l| l.get(x + 1..x + 2)),
+            );
+            match result {
+                (Some("M"), Some("M"), Some("A"), Some("S"), Some("S"))
+                | (Some("S"), Some("M"), Some("A"), Some("S"), Some("M"))
+                | (Some("S"), Some("S"), Some("A"), Some("M"), Some("M"))
+                | (Some("M"), Some("S"), Some("A"), Some("M"), Some("S")) => {
+                    count += 1;
+                }
+                _ => {}
             }
         }
     }
